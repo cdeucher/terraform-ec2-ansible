@@ -1,0 +1,38 @@
+- hosts: dev-nginx
+  name: configuration play
+  user: ansible
+  become: true
+  become_method: sudo      
+  become_user: ansible
+  become_flags: sudo
+  # https://gist.github.com/gwillem/4ba393dceb55e5ae276a87300f6b8e6f#gistcomment-1914049
+  gather_facts: false
+  pre_tasks:
+    - name: Install python for Ansible
+      become: true
+      become_method: sudo
+      raw: test -e /usr/bin/python || (sudo apt install python3 -y)
+      changed_when: false
+    - setup: # aka gather_facts
+
+  tasks:
+    #- name: Run update
+    #  command: sudo apt update -y
+    #  changed_when: false
+    #  become: true
+    #  become_method: sudo      
+    #  become_user: ubuntu      
+    - name: show hosts
+      debug: msg="play_hosts={{play_hosts}}"
+
+    - name: show user_id
+      debug: msg="user_id={{ ansible_user_id }}" 
+      
+    - name: Install git
+      become: true
+      become_method: sudo      
+      become_user: ansible       
+      apt:
+        name: git
+        state: present
+        update_cache: yes
